@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="PurchaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CustomerMaster">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar" MaxLength="50" />
+          <Property Name="State" Type="nvarchar" MaxLength="50" />
+          <Property Name="ZipCode" Type="nchar" MaxLength="10" />
+          <Property Name="Country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nchar" MaxLength="20" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="ItemMaster">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemCode" Type="nchar" MaxLength="10" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="50" />
+          <Property Name="QuantityOnHand" Type="nchar" MaxLength="30" />
+          <Property Name="Price" Type="nchar" MaxLength="20" />
+          <Property Name="WebEnabled" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="SalesOrderHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Doc" Type="nvarchar" MaxLength="50" />
+          <Property Name="Date" Type="date" />
+          <Property Name="PostingDate" Type="date" />
+          <Property Name="DocTotal" Type="nchar" MaxLength="10" />
+          <Property Name="State" Type="nvarchar" MaxLength="50" />
+          <Property Name="ZipCode" Type="nchar" MaxLength="10" />
+          <Property Name="Street" Type="nvarchar" MaxLength="50" />
+          <Property Name="Country" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReferenceNumber" Type="nchar" MaxLength="20" />
+          <Property Name="OrderNum" Type="nchar" MaxLength="10" />
+          <Property Name="SalesPerson" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Purchase.dbo.SalesOrderLine' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SalesOrderLine">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ItemNo" Type="nchar" MaxLength="10" />
+          <Property Name="QuantityOrdered" Type="nchar" MaxLength="10" />
+          <Property Name="Price" Type="nchar" MaxLength="20" />
+          <Property Name="LineTotal" Type="nchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="nchar" MaxLength="20" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_SalesOrderHeader_SalesOrderHeader">
+          <End Role="SalesOrderHeader" Type="Self.SalesOrderHeader" Multiplicity="1" />
+          <End Role="SalesOrderHeader1" Type="Self.SalesOrderHeader" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SalesOrderHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrderHeader1">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SalesOrderLine_SalesOrderHeader">
+          <End Role="SalesOrderHeader" Type="Self.SalesOrderHeader" Multiplicity="1" />
+          <End Role="SalesOrderLine" Type="Self.SalesOrderLine" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SalesOrderHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrderLine">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PurchaseModelStoreContainer">
+          <EntitySet Name="CustomerMaster" EntityType="Self.CustomerMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemMaster" EntityType="Self.ItemMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SalesOrderHeader" EntityType="Self.SalesOrderHeader" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SalesOrderLine" EntityType="Self.SalesOrderLine" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SalesOrderLine].[Id] AS [Id], 
+    [SalesOrderLine].[ItemNo] AS [ItemNo], 
+    [SalesOrderLine].[QuantityOrdered] AS [QuantityOrdered], 
+    [SalesOrderLine].[Price] AS [Price], 
+    [SalesOrderLine].[LineTotal] AS [LineTotal]
+    FROM [dbo].[SalesOrderLine] AS [SalesOrderLine]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_SalesOrderHeader_SalesOrderHeader" Association="Self.FK_SalesOrderHeader_SalesOrderHeader">
+            <End Role="SalesOrderHeader" EntitySet="SalesOrderHeader" />
+            <End Role="SalesOrderHeader1" EntitySet="SalesOrderHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SalesOrderLine_SalesOrderHeader" Association="Self.FK_SalesOrderLine_SalesOrderHeader">
+            <End Role="SalesOrderHeader" EntitySet="SalesOrderHeader" />
+            <End Role="SalesOrderLine" EntitySet="SalesOrderLine" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PurchaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CustomerMaster">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ZipCode" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ItemMaster">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemCode" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="ItemName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="QuantityOnHand" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+          <Property Name="Price" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="WebEnabled" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SalesOrderHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Doc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="PostingDate" Type="DateTime" Precision="0" />
+          <Property Name="DocTotal" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ZipCode" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Street" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceNumber" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="OrderNum" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="SalesPerson" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SalesOrderHeader1" Relationship="Self.FK_SalesOrderHeader_SalesOrderHeader" FromRole="SalesOrderHeader" ToRole="SalesOrderHeader1" />
+          <NavigationProperty Name="SalesOrderHeader2" Relationship="Self.FK_SalesOrderHeader_SalesOrderHeader" FromRole="SalesOrderHeader1" ToRole="SalesOrderHeader" />
+          <NavigationProperty Name="SalesOrderLine" Relationship="Self.FK_SalesOrderLine_SalesOrderHeader" FromRole="SalesOrderHeader" ToRole="SalesOrderLine" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SalesOrderLine">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ItemNo" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="QuantityOrdered" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Price" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="LineTotal" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="SalesOrderHeader" Relationship="Self.FK_SalesOrderLine_SalesOrderHeader" FromRole="SalesOrderLine" ToRole="SalesOrderHeader" />
+        </EntityType>
+        <Association Name="FK_SalesOrderHeader_SalesOrderHeader">
+          <End Role="SalesOrderHeader" Type="Self.SalesOrderHeader" Multiplicity="1" />
+          <End Role="SalesOrderHeader1" Type="Self.SalesOrderHeader" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SalesOrderHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrderHeader1">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SalesOrderLine_SalesOrderHeader">
+          <End Role="SalesOrderHeader" Type="Self.SalesOrderHeader" Multiplicity="1" />
+          <End Role="SalesOrderLine" Type="Self.SalesOrderLine" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="SalesOrderHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SalesOrderLine">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PurchaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CustomerMasters" EntityType="Self.CustomerMaster" />
+          <EntitySet Name="ItemMasters" EntityType="Self.ItemMaster" />
+          <EntitySet Name="SalesOrderHeaders" EntityType="Self.SalesOrderHeader" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="SalesOrderLines" EntityType="Self.SalesOrderLine" />
+          <AssociationSet Name="FK_SalesOrderHeader_SalesOrderHeader" Association="Self.FK_SalesOrderHeader_SalesOrderHeader">
+            <End Role="SalesOrderHeader" EntitySet="SalesOrderHeaders" />
+            <End Role="SalesOrderHeader1" EntitySet="SalesOrderHeaders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SalesOrderLine_SalesOrderHeader" Association="Self.FK_SalesOrderLine_SalesOrderHeader">
+            <End Role="SalesOrderHeader" EntitySet="SalesOrderHeaders" />
+            <End Role="SalesOrderLine" EntitySet="SalesOrderLines" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PurchaseModelStoreContainer" CdmEntityContainer="PurchaseEntities">
+          <EntitySetMapping Name="CustomerMasters">
+            <EntityTypeMapping TypeName="PurchaseModel.CustomerMaster">
+              <MappingFragment StoreEntitySet="CustomerMaster">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemMasters">
+            <EntityTypeMapping TypeName="PurchaseModel.ItemMaster">
+              <MappingFragment StoreEntitySet="ItemMaster">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ItemCode" ColumnName="ItemCode" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="QuantityOnHand" ColumnName="QuantityOnHand" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="WebEnabled" ColumnName="WebEnabled" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SalesOrderHeaders">
+            <EntityTypeMapping TypeName="PurchaseModel.SalesOrderHeader">
+              <MappingFragment StoreEntitySet="SalesOrderHeader">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="Doc" ColumnName="Doc" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="PostingDate" ColumnName="PostingDate" />
+                <ScalarProperty Name="DocTotal" ColumnName="DocTotal" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="ReferenceNumber" ColumnName="ReferenceNumber" />
+                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
+                <ScalarProperty Name="SalesPerson" ColumnName="SalesPerson" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="PurchaseModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SalesOrderLines">
+            <EntityTypeMapping TypeName="PurchaseModel.SalesOrderLine">
+              <MappingFragment StoreEntitySet="SalesOrderLine">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ItemNo" ColumnName="ItemNo" />
+                <ScalarProperty Name="QuantityOrdered" ColumnName="QuantityOrdered" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="LineTotal" ColumnName="LineTotal" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
