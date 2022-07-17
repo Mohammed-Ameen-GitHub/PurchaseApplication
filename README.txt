@@ -1,7 +1,6 @@
-Purchase Application
+Purchase Application
 
 Table of contents
-
 -----------------
 
 * Introduction
@@ -29,10 +28,9 @@ OAuth 2.0 and hosted in local IIS server.
 
 Configuration
 
-Purchase Application
+Purchase Application
 
-Purchase Application folder consists of controllers, models, views and all initialization folders for MVC project.
-
+Purchase Application folder consists of controllers, models, views and all initialization folders for MVC project.
 
 -----------------
 
